@@ -1,8 +1,9 @@
-import {Schema, model, Query} from 'mongoose';
+import {Schema, model} from 'mongoose';
 
 interface User {
     name: string;
     email: string;
+    pets: Array<string>;
 };
 
 const userSchema = new Schema<User>({
@@ -10,7 +11,8 @@ const userSchema = new Schema<User>({
     email:{
         type: String,
         trim: true
-    }
+    },
+    pets:{type: [String],default:[]}
 });
 
 

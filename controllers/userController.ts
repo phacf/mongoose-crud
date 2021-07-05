@@ -1,6 +1,6 @@
 import { userModel } from "../models/user";
+import { petModel } from '../models/pet'
 import { Request, Response } from "express";
-//import { dbConnect } from "../models/db";
 
 export class UserController {
   async createUser(req: Request, res: Response) {
@@ -9,8 +9,8 @@ export class UserController {
       const { email } = req.body;
 
       const person = new userModel({
-        name: name,
-        email: email,
+         name,
+         email,
       });
 
       await person.save();
@@ -32,13 +32,11 @@ export class UserController {
       return res.status(500).json({ msg: "fodeu" });
     }
   }
-
+//fazer update sempre com _id apos usar getAll
   async getByName(req: Request, res: Response) {
     try {
       const { name } = req.params;
-
       const person = await userModel.find({ name: name });
-
       return res.status(200).json({ ...person });
     } catch (error) {
       console.log(error);
@@ -53,16 +51,31 @@ export class UserController {
 
       const options = {
         new: true,
-        rawResult: true,
       };
       const person = await userModel.findOneAndUpdate(
         { name: name },
-        fields,
+       fields,
         options
-      );
+      ).lean();
 
       return res.status(200).json({ ...person });
     } catch (error) {
+      console.log(error);
+      return res.status(500).json({ msg: "fodeu" });
+    }
+  }
+
+  async findAllPets(req: Request, res: Response){
+    try{
+      const {id} = req.params;
+      const person = await userModel.findById(id).lean();
+      if(!person){
+        return res.status(404).json({msg: 'num achei ninguem'})
+      }
+      const allPets = await petModel.find().in('_id',person.pets)
+      return res.status(200).json({allPets})
+    }
+    catch (error) {
       console.log(error);
       return res.status(500).json({ msg: "fodeu" });
     }
