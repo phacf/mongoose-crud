@@ -1,4 +1,4 @@
-import {Schema, model} from 'mongoose';
+import {Schema, model, Query} from 'mongoose';
 
 interface User {
     name: string;
@@ -12,5 +12,10 @@ const userSchema = new Schema<User>({
         trim: true
     }
 });
+
+
+//mongoose salva a colection user no banco 
 export const userModel = model<User>('User', userSchema);
+
+
 
