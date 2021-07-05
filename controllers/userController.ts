@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 //import { dbConnect } from "../models/db";
 
 export class UserController {
-
   async createUser(req: Request, res: Response) {
     try {
       const { name } = req.body;
@@ -37,7 +36,7 @@ export class UserController {
   async getByName(req: Request, res: Response) {
     try {
       const { name } = req.params;
-    
+
       const person = await userModel.find({ name: name });
 
       return res.status(200).json({ ...person });
@@ -47,7 +46,25 @@ export class UserController {
     }
   }
 
-  async update (req: Request, res: Response){
-      
+  async updateByName(req: Request, res: Response) {
+    try {
+      const { name } = req.params;
+      const fields = req.body;
+
+      const options = {
+        new: true,
+        rawResult: true,
+      };
+      const person = await userModel.findOneAndUpdate(
+        { name: name },
+        fields,
+        options
+      );
+
+      return res.status(200).json({ ...person });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ msg: "fodeu" });
+    }
   }
 }
